@@ -49,11 +49,18 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 
 # Construir assets frontend si existe package.json (Vite/Tailwind)
 RUN if [ -f package.json ]; then \
-      curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-      apt-get update && apt-get install -y nodejs && \
-      npm ci && npm run build && \
-      rm -rf node_modules && apt-get purge -y nodejs && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* ; \
-    fi
+            echo "[BUILD] Instalando Node y dependencias para Vite/Tailwind"; \
+            curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+            apt-get update && apt-get install -y nodejs && \
+            export NODE_ENV=production && \
+            npm ci && \
+            npm run build && \
+            echo "[BUILD] Contenido generado en public/build:" && ls -1 public/build || true && \
+            echo "[BUILD] Manifest:" && cat public/build/manifest.json || true && \
+            rm -rf node_modules && apt-get purge -y nodejs && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* ; \
+        else \
+            echo "[BUILD] No se encontró package.json. Saltando build frontend"; \
+        fi
 
 # Ajustar permisos de las carpetas de Laravel
 RUN chown -R www:www /var/www/html && \
