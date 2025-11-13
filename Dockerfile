@@ -7,7 +7,7 @@
 #  REDIS_HOST, REDIS_PORT, REDIS_PASSWORD (si aplica)
 ###############################################
 
-FROM php:8.2-fpm
+FROM php:8.2-fpm AS php-base
 
 # Instalar dependencias del sistema y extensiones necesarias.
 # Incluimos soporte tanto para MySQL como Postgres (opcional) y Redis.
@@ -39,7 +39,6 @@ RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/bash -g www www
 
 WORKDIR /var/www/html
 
-# Copiar archivos del proyecto
 COPY . .
 
 # Instalar dependencias PHP (sin dev para producción)
@@ -47,20 +46,19 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
     && php artisan route:cache || true \
     && php artisan view:cache || true
 
-# Construir assets frontend si existe package.json (Vite/Tailwind)
-RUN if [ -f package.json ]; then \
-            echo "[BUILD] Instalando Node y devDependencies para Vite/Tailwind"; \
-            curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-            apt-get update && apt-get install -y nodejs && \
-            npm ci && \
-            npm run build && \
-            echo "[BUILD] Contenido generado en public/build:" && ls -1 public/build || true && \
-            echo "[BUILD] Manifest:" && cat public/build/manifest.json || true && \
-            npm prune --production && \
-            rm -rf node_modules && apt-get purge -y nodejs && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* ; \
-        else \
-            echo "[BUILD] No se encontró package.json. Saltando build frontend"; \
-        fi
+# Etapa de build de assets para asegurar la persistencia del directorio public/build
+FROM node:20-alpine AS assets-builder
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
+COPY resources ./resources
+COPY vite.config.js ./
+COPY tailwind.config.js ./
+RUN npm run build
+
+# Volver a la imagen base PHP y copiar sólo los assets generados
+FROM php-base
+COPY --from=assets-builder /app/public/build /var/www/html/public/build
 
 # Ajustar permisos de las carpetas de Laravel
 RUN chown -R www:www /var/www/html && \
