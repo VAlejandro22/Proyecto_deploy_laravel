@@ -49,16 +49,24 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 # Etapa de build de assets para asegurar la persistencia del directorio public/build
 FROM node:20-alpine AS assets-builder
 WORKDIR /app
+# Copiamos package y lock para instalar TODAS las dependencias (incluye tailwind y postcss)
 COPY package.json package-lock.json* ./
 RUN npm ci
-COPY resources ./resources
+# Copiar configuraciones necesarias para procesar Tailwind
 COPY vite.config.js ./
 COPY tailwind.config.js ./
-RUN npm run build
+COPY postcss.config.js ./
+# Copiar recursos (CSS/JS/Views) para que tailwind pueda detectar clases
+COPY resources ./resources
+# Asegurar existencia de directorio public antes del build
+RUN mkdir -p public && npm run build && \
+    echo "[ASSETS] Manifest:" && cat public/build/manifest.json && \
+    echo "[ASSETS] Primeras líneas CSS:" && head -n 40 public/build/assets/*.css || true
 
 # Volver a la imagen base PHP y copiar sólo los assets generados
 FROM php-base
 COPY --from=assets-builder /app/public/build /var/www/html/public/build
+RUN ls -l public/build || true && head -n 20 public/build/assets/*.css || true
 
 # Ajustar permisos de las carpetas de Laravel
 RUN chown -R www:www /var/www/html && \
