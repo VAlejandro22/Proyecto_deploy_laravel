@@ -1,0 +1,8 @@
+{
+    "factura_id": 22,
+    "monto": 74.75,
+    "tipo_pago": "transferencia",
+    "referencia": "TRF-12345678",
+    "descripcion": "Pago completo de factura FAC-000022",
+    "archivo_comprobante": null
+}

@@ -1,0 +1,515 @@
+{
+	"info": {
+		"name": "Sistema de Facturación API",
+		"description": "Colección completa de APIs para el Sistema de Facturación",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{api_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api",
+			"type": "string",
+			"description": "URL base de la API"
+		},
+		{
+			"key": "api_token",
+			"value": "your-token-here",
+			"type": "string",
+			"description": "Token de autenticación"
+		}
+	],
+	"item": [
+		{
+			"name": "Autenticación",
+			"item": [
+				{
+					"name": "Obtener Usuario Actual",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user",
+							"host": ["{{base_url}}"],
+							"path": ["user"]
+						}
+					}
+				},
+				{
+					"name": "Info Token Actual",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/my-token",
+							"host": ["{{base_url}}"],
+							"path": ["my-token"]
+						}
+					}
+				},
+				{
+					"name": "Revocar Token Actual",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/my-token",
+							"host": ["{{base_url}}"],
+							"path": ["my-token"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Obtener Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["dashboard"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Listar Usuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users?per_page=15&search=&status=&role=",
+							"host": ["{{base_url}}"],
+							"path": ["users"],
+							"query": [
+								{"key": "per_page", "value": "15"},
+								{"key": "search", "value": ""},
+								{"key": "status", "value": ""},
+								{"key": "role", "value": ""}
+							]
+						}
+					}
+				},
+				{
+					"name": "Crear Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Usuario Prueba\",\n    \"email\": \"usuario@ejemplo.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"role_id\": 1,\n    \"activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": ["{{base_url}}"],
+							"path": ["users"]
+						}
+					}
+				},
+				{
+					"name": "Ver Usuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Actualizar Usuario",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Usuario Actualizado\",\n    \"email\": \"usuario.actualizado@ejemplo.com\",\n    \"role_id\": 1,\n    \"activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Cambiar Estado Usuario",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1/toggle-status",
+							"host": ["{{base_url}}"],
+							"path": ["users", "1", "toggle-status"]
+						}
+					}
+				},
+				{
+					"name": "Eliminar Usuario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["users", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Clientes",
+			"item": [
+				{
+					"name": "Listar Clientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clientes?per_page=15&search=&status=",
+							"host": ["{{base_url}}"],
+							"path": ["clientes"],
+							"query": [
+								{"key": "per_page", "value": "15"},
+								{"key": "search", "value": ""},
+								{"key": "status", "value": ""}
+							]
+						}
+					}
+				},
+				{
+					"name": "Crear Cliente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Cliente Prueba\",\n    \"email\": \"cliente@ejemplo.com\",\n    \"telefono\": \"123456789\",\n    \"direccion\": \"Calle 123\",\n    \"nit\": \"123456789-0\",\n    \"activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/clientes",
+							"host": ["{{base_url}}"],
+							"path": ["clientes"]
+						}
+					}
+				},
+				{
+					"name": "Ver Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clientes/1",
+							"host": ["{{base_url}}"],
+							"path": ["clientes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Actualizar Cliente",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Cliente Actualizado\",\n    \"email\": \"cliente.actualizado@ejemplo.com\",\n    \"telefono\": \"987654321\",\n    \"direccion\": \"Calle Nueva 456\",\n    \"nit\": \"987654321-0\",\n    \"activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/clientes/1",
+							"host": ["{{base_url}}"],
+							"path": ["clientes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Cambiar Estado Cliente",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clientes/1/toggle-status",
+							"host": ["{{base_url}}"],
+							"path": ["clientes", "1", "toggle-status"]
+						}
+					}
+				},
+				{
+					"name": "Eliminar Cliente",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clientes/1",
+							"host": ["{{base_url}}"],
+							"path": ["clientes", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Productos",
+			"item": [
+				{
+					"name": "Listar Productos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/productos?per_page=15&search=&status=&categoria=",
+							"host": ["{{base_url}}"],
+							"path": ["productos"],
+							"query": [
+								{"key": "per_page", "value": "15"},
+								{"key": "search", "value": ""},
+								{"key": "status", "value": ""},
+								{"key": "categoria", "value": ""}
+							]
+						}
+					}
+				},
+				{
+					"name": "Productos Activos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/productos/active",
+							"host": ["{{base_url}}"],
+							"path": ["productos", "active"]
+						}
+					}
+				},
+				{
+					"name": "Crear Producto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Producto Prueba\",\n    \"descripcion\": \"Descripción del producto\",\n    \"precio\": 99.99,\n    \"stock\": 100,\n    \"categoria\": \"Categoría Test\",\n    \"codigo\": \"PROD001\",\n    \"activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/productos",
+							"host": ["{{base_url}}"],
+							"path": ["productos"]
+						}
+					}
+				},
+				{
+					"name": "Ver Producto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/productos/1",
+							"host": ["{{base_url}}"],
+							"path": ["productos", "1"]
+						}
+					}
+				},
+				{
+					"name": "Verificar Stock",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cantidad\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/productos/1/check-stock",
+							"host": ["{{base_url}}"],
+							"path": ["productos", "1", "check-stock"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Facturas",
+			"item": [
+				{
+					"name": "Listar Facturas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/facturas?per_page=15&estado=&fecha_desde=&fecha_hasta=&cliente_id=",
+							"host": ["{{base_url}}"],
+							"path": ["facturas"],
+							"query": [
+								{"key": "per_page", "value": "15"},
+								{"key": "estado", "value": ""},
+								{"key": "fecha_desde", "value": ""},
+								{"key": "fecha_hasta", "value": ""},
+								{"key": "cliente_id", "value": ""}
+							]
+						}
+					}
+				},
+				{
+					"name": "Crear Factura",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cliente_id\": 1,\n    \"productos\": [\n        {\n            \"id\": 1,\n            \"cantidad\": 2,\n            \"precio_unitario\": 99.99\n        },\n        {\n            \"id\": 2,\n            \"cantidad\": 1,\n            \"precio_unitario\": 49.99\n        }\n    ],\n    \"observaciones\": \"Factura de prueba\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/facturas",
+							"host": ["{{base_url}}"],
+							"path": ["facturas"]
+						}
+					}
+				},
+				{
+					"name": "Ver Factura",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/facturas/1",
+							"host": ["{{base_url}}"],
+							"path": ["facturas", "1"]
+						}
+					}
+				},
+				{
+					"name": "Anular Factura",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/facturas/1/anular",
+							"host": ["{{base_url}}"],
+							"path": ["facturas", "1", "anular"]
+						}
+					}
+				},
+				{
+					"name": "Estadísticas Facturas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/facturas/stats",
+							"host": ["{{base_url}}"],
+							"path": ["facturas", "stats"]
+						}
+					}
+				},
+				{
+					"name": "Generar PDF",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/facturas/1/pdf",
+							"host": ["{{base_url}}"],
+							"path": ["facturas", "1", "pdf"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Cliente Específico",
+			"item": [
+				{
+					"name": "Mis Facturas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cliente/facturas",
+							"host": ["{{base_url}}"],
+							"path": ["cliente", "facturas"]
+						}
+					}
+				},
+				{
+					"name": "Mi Factura Específica",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cliente/facturas/1",
+							"host": ["{{base_url}}"],
+							"path": ["cliente", "facturas", "1"]
+						}
+					}
+				},
+				{
+					"name": "Mis Estadísticas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cliente/facturas-stats",
+							"host": ["{{base_url}}"],
+							"path": ["cliente", "facturas-stats"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

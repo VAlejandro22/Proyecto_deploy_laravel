@@ -1,0 +1,84 @@
+services:
+  # Aplicación PHP/Laravel
+  app:
+    build: .
+    container_name: facturacion_app
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - facturacion
+    environment:
+      - DB_HOST=postgres
+      - DB_DATABASE=facturacion
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres_password
+      - REDIS_HOST=redis
+      - MAIL_HOST=mailhog
+
+  # Servidor Web
+  web:
+    image: nginx:alpine
+    container_name: facturacion_web
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - facturacion
+
+  # Base de Datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: facturacion_postgres
+    environment:
+      POSTGRES_DB: facturacion
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - facturacion
+
+  # Redis para cache
+  redis:
+    image: redis:7-alpine
+    container_name: facturacion_redis
+    networks:
+      - facturacion
+
+  # MailHog para emails de prueba
+  mailhog:
+    image: mailhog/mailhog
+    container_name: facturacion_mailhog
+    ports:
+      - "8025:8025"
+    networks:
+      - facturacion
+
+  # Node para assets (Vite)
+  node:
+    image: node:20-alpine
+    container_name: facturacion_node
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    command: sh -c "npm install && npm run build"
+    networks:
+      - facturacion
+
+volumes:
+  postgres_data:
+
+networks:
+  facturacion:

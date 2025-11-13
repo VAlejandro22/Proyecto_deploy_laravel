@@ -1,0 +1,20 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+
+    level: 5
+    treatPhpDocTypesAsCertain: false
+    
+    ignoreErrors:
+        # Ignora errores de propiedades de pivot tables en relaciones many-to-many
+        - '#Access to an undefined property .*\$pivot#'
+        # Ignora errores de propiedades calculadas en consultas raw SQL
+        - '#Access to an undefined property .*\$(month|year|cantidad)#'
+        # Ignora errores de propiedades que están en fillable pero PHPStan no detecta
+        - '#Access to an undefined property App\\Models\\Cliente::\$(direccion|nit)#'
+        - '#Access to an undefined property App\\Models\\Producto::\$(categoria|codigo)#'
+        - '#Access to an undefined property App\\Models\\Factura::\$observaciones#'
+    
