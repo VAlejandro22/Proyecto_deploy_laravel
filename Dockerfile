@@ -44,7 +44,6 @@ COPY . .
 
 # Instalar dependencias PHP (sin dev para producción)
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist \
-    && php artisan config:cache || true \
     && php artisan route:cache || true \
     && php artisan view:cache || true
 
@@ -70,8 +69,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD php -r "exit(!@fsockopen('127.0.0.1', getenv('PORT') ?: 8080));"
 
-# Comando de inicio. No levanta DB ni Redis: solo la app.
-# Migraciones se pueden correr manualmente en otro deploy o activando la línea comentada.
+# Comando de inicio: limpia y recompone cache de config con variables
+# de entorno de Railway, ejecuta migraciones y levanta el servidor.
 ENV PORT=8080
-# CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT}
-CMD ["sh","-c","php artisan serve --host=0.0.0.0 --port=${PORT}"]
+CMD ["sh","-c","php artisan config:clear && php artisan migrate --force --no-interaction && php artisan config:cache && php artisan serve --host=0.0.0.0 --port=${PORT}"]
