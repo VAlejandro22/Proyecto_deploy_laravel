@@ -11,7 +11,7 @@
     <meta charset="utf-8" />
     <title>{{ config('app.name', 'Laravel') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite('resources/js/app.js')
     <script src="https://unpkg.com/alpinejs" defer></script>
     <script>
     document.addEventListener('alpine:init', () => {
